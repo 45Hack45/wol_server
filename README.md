@@ -107,11 +107,11 @@ To ensure that the Wake-on-LAN server starts automatically on boot, you can set 
 This Bash script creates and configures a systemd service to run the Wake-on-LAN server. Here's how it works:
 
 1. **Variables Configuration**:
-   - `USERNAME`: Your system username (default: `raspberry`).
-   - `GROUPNAME`: Your system group name (default: `raspberry`).
-   - `PROJECT_DIR`: The directory where your project is located (default: `/home/raspberry/wol_server`).
+   - `USERNAME`: Your system username.
+   - `GROUPNAME`: Your system group name.
+   - `PROJECT_DIR`: The directory where your project is located.
    - `SERVICE_NAME`: The name of the systemd service (`wol-server.service`).
-   - `PYTHON_EXEC`: The path to the Python executable (default: `/usr/bin/python3`).
+   - `PYTHON_EXEC`: The path to the Python executable.
 
 2. **Service File Creation**:
    - The script creates a systemd service file at `/etc/systemd/system/wol-server.service`.
