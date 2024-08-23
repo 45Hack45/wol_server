@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wake-on-LAN Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .status-online {
+            color: green;
+            font-weight: bold;
+        }
+        .status-offline {
+            color: red;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .shutdown-button {
+            background-color: #dc3545;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wake-on-LAN Dashboard</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>IP Address</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="targetsTable">
+                <!-- Rows will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function fetchStatus() {
+            fetch('/status')
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('targetsTable');
+                table.innerHTML = ''; // Clear the table
+                data.forEach(target => {
+                    const row = document.createElement('tr');
+                    
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = target.name;
+                    row.appendChild(nameCell);
+
+                    const ipCell = document.createElement('td');
+                    ipCell.textContent = target.ip;
+                    row.appendChild(ipCell);
+
+                    const statusCell = document.createElement('td');
+                    statusCell.textContent = target.online ? 'Online' : 'Offline';
+                    statusCell.className = target.online ? 'status-online' : 'status-offline';
+                    row.appendChild(statusCell);
+
+                    const actionCell = document.createElement('td');
+
+                    const wakeButton = document.createElement('button');
+                    wakeButton.textContent = 'Turn On';
+                    wakeButton.disabled = target.online;
+                    wakeButton.onclick = function() {
+                        fetch('/wake', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ mac: target.mac })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            alert(result.message);
+                            fetchStatus(); // Refresh the status after waking up
+                        });
+                    };
+                    actionCell.appendChild(wakeButton);
+
+                    const shutdownButton = document.createElement('button');
+                    shutdownButton.textContent = 'Shutdown';
+                    shutdownButton.className = 'shutdown-button';
+                    shutdownButton.disabled = !target.online;
+                    shutdownButton.onclick = function() {
+                        fetch('/shutdown', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: target.id,
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            alert(result.message);
+                            fetchStatus(); // Refresh the status after shutdown
+                        });
+                    };
+                    actionCell.appendChild(shutdownButton);
+
+                    row.appendChild(actionCell);
+                    table.appendChild(row);
+                });
+            });
+        }
+
+        // Fetch status every 30 seconds
+        setInterval(fetchStatus, 30000);
+
+        // Fetch status on page load
+        document.addEventListener('DOMContentLoaded', fetchStatus);
+    </script>
+</body>
+</html>
