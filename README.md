@@ -44,7 +44,7 @@ To set up the project, follow these steps:
 
 ## Configuration
 
-### `devices.json`
+### devices.json
 
 This file contains a list of devices that the server will manage. Each device entry includes:
 - **id**: A unique identifier for the device.
@@ -53,7 +53,7 @@ This file contains a list of devices that the server will manage. Each device en
 - **ip**: The IP address used to check the device's status and for SSH operations.
 - **ssh_user**: The SSH username for shutting down the device.
 
-### `config.json`
+### config.json
 
 This file configures the TrueNAS monitoring and email notification settings. It includes:
 - **url**: The base URL for the Wake-on-LAN server.
@@ -62,7 +62,7 @@ This file configures the TrueNAS monitoring and email notification settings. It 
 - **mail_notification_sender**: The email address that sends notifications.
 - **mail_notification_recipients**: A list of email addresses to receive notifications.
 
-### `credentials.json`
+### credentials.json
 
 This file stores sensitive information, such as:
 - **truenas_wol_auth**: The authentication token or credentials for accessing the TrueNAS API.
@@ -71,9 +71,17 @@ This file stores sensitive information, such as:
 ## Running the Server
 
 To start the Flask web server:
+- Run the command: `python3 wol_server.py`
 - The server will start on the specified host and port, allowing you to access the web interface via a browser.
 
 ## Running the TrueNAS Monitor
+Create a Cron Job to run the TrueNAS monitoring script every 30 minutes.
+In linux 
+
+```bash
+```sudo crontab -e
+*/30 * * * * bash path/to/script/monitoring_script.sh
+```
 
 The TrueNAS monitoring script checks the CPU and network load of the TrueNAS server and triggers a shutdown if both loads are low. It also sends an email notification with the shutdown details and a link to cancel the shutdown.
 
@@ -94,7 +102,7 @@ The TrueNAS monitoring script checks the CPU and network load of the TrueNAS ser
 
 To ensure that the Wake-on-LAN server starts automatically on boot, you can set it up as a systemd service. The provided `setup_wol_service.sh` script simplifies this process.
 
-### `setup_wol_service.sh`
+### setup_wol_service.sh
 
 This Bash script creates and configures a systemd service to run the Wake-on-LAN server. Here's how it works:
 
