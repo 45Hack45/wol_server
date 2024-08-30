@@ -30,7 +30,8 @@ def mean_data(data: list[list], last_time: int = 60):
 
 def check_network_load():
     messages = []
-    url = "https://truenas.madhacker.win/api/v2.0/reporting/get_data"
+    truenas_url = config.get('truenas_url')
+    url = f"{truenas_url}/api/v2.0/reporting/get_data"
 
     payload = {
         "graphs": [{
@@ -69,7 +70,8 @@ def check_network_load():
 
 def check_cpu_load():
     messages = []
-    url = "https://truenas.madhacker.win/api/v2.0/reporting/get_data"
+    truenas_url = config.get('truenas_url')
+    url = f"{truenas_url}/api/v2.0/reporting/get_data"
 
     payload = {
         "graphs": [{

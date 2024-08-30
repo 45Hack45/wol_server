@@ -1,5 +1,6 @@
 {
     "url": "http://wol_server_ip:wol_server_port",
+    "truenas_url": "http://truenas_ip:truenas_port",
     "truenas_wol_server_id": 1,
     "SHUTDOWN_DELAY": 1,
     "mail_notification_sender": "",
