@@ -83,6 +83,7 @@ def check_cpu_load():
             }
         }
 
+
     response = requests.post(url, headers=headers, json=payload)
     aggregations, graph_data = process_response(response.json())
     mean_midterm = aggregations['mean']['midterm']
@@ -161,9 +162,10 @@ if __name__ == '__main__':
 
         res_messages = main()
 
-        print("".join(res_messages))
+        print("\n".join(res_messages))
     except Exception as e:
         # Notify error
         subject = "NAS Monitoring - Error Notification"
         body = "NAS Error: " + str(e) + "\n"
         send_notification(subject, body)
+        print("\n".join([subject, body]))
